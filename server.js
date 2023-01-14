@@ -32,15 +32,13 @@ app.listen(port || 4000, () => {
 /* routes */
 // ## post
 app.post("/post", (req, res) => {
-  console.log(req.body);
   projectData.temp = req.body.temp;
   projectData.content = req.body.content;
   projectData.date = req.body.date;
   dataArray.push(projectData);
   console.log(dataArray);
-
-  // projectData[0] = req.body;
   console.log(projectData);
+  res.send(projectData);
 });
 // ## get
 app.get("/get", (req, res) => {

@@ -1,17 +1,19 @@
 /* Global Variables */
+
 // api var
 const baseUrl = "https://api.openweathermap.org/data/2.5/weather?zip=";
+// Personal API Key for OpenWeatherMap API
 const apiKey = "&appid=d0908eba7de46c86b9f2703c3c46351e";
-const zip = document.getElementById("zip");
-// DOM var
+
+// DOM var addeventListner
 const generate = document.getElementById("generate");
 const content = document.getElementById("content");
+const zip = document.getElementById("zip");
 
+// DOM var to update UI
 const feeling = document.getElementById("feeling");
 const date = document.getElementById("date");
 const temp = document.getElementById("temp");
-
-//   "https://api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}&appid={API key}";
 
 // Create a new date instance dynamically with JS
 let d = new Date();
@@ -23,23 +25,31 @@ link : "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global
 let newDate = d.getDate() + "." + month + "." + d.getFullYear();
 console.log(newDate);
 
+// Event listener to add function to existing HTML DOM element
 generate.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log(zip.value);
+  /* Function called by event listener */
   getData(baseUrl + zip.value + apiKey).then((data) => {
     postData("http://localhost:7000/post", {
       temp: data.main.temp,
       content: feeling.value,
       date: newDate,
-    }).then((data) => {
-      date.innerText = `Today : ${data.date}`;
-      content.innerText = `Feel like : ${data.content}`;
-      temp.innerText = `Temperature : ${data.temp}`;
-      return data;
+    }).then((allData) => {
+      // update UI most recent Entry
+      date.innerText = `Today : ${allData.date}`;
+      content.innerText = `Feel like : ${allData.content}`;
+      temp.innerText = `Temperature : ${Math.round(allData.temp)} degrees`;
+      // reset input to empty
+      zip.value = "";
+      feeling.value = "";
+      //   return data
+      return allData;
     });
   });
 });
 
+/* Function to GET Web API Data*/
+/* Function to GET Project Data */
 const getData = async (url) => {
   const response = await fetch(url);
   try {
@@ -51,21 +61,15 @@ const getData = async (url) => {
   }
 };
 
-const postData = async (
-  url = "http://localhost:7000/post",
-  data = {
-    temp: "test",
-    date: "web test",
-    content: "test",
-  }
-) => {
+/* Function to POST data */
+const postData = async (url, data = {}) => {
   const response = await fetch(url, {
     method: "POST",
     credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
+    body: JSON.stringify(data),
   });
   try {
     const newData = await response.json();
@@ -75,15 +79,3 @@ const postData = async (
     console.log("error", error);
   }
 };
-
-// Personal API Key for OpenWeatherMap API
-
-// Event listener to add function to existing HTML DOM element
-
-/* Function called by event listener */
-
-/* Function to GET Web API Data*/
-
-/* Function to POST data */
-
-/* Function to GET Project Data */

@@ -31,13 +31,11 @@ generate.addEventListener("click", (e) => {
       temp: data.main.temp,
       content: feeling.value,
       date: newDate,
-    }).then((Fdata) => {
-      console.log("then");
-      console.log(Fdata);
-      date.innerText = Fdata.date;
-      feeling.innerText = Fdata.content;
-      temp.innerText = Fdata.temp;
-      return Fdata;
+    }).then((data) => {
+      date.innerText = `Today : ${data.date}`;
+      content.innerText = `Feel like : ${data.content}`;
+      temp.innerText = `Temperature : ${data.temp}`;
+      return data;
     });
   });
 });

@@ -5,13 +5,11 @@ const baseUrl = "https://api.openweathermap.org/data/2.5/weather?zip=";
 // Personal API Key for OpenWeatherMap API
 const apiKey = "&appid=d0908eba7de46c86b9f2703c3c46351e";
 
-// DOM var addeventListner
+// DOM var addEventListener
 const generate = document.getElementById("generate");
 const content = document.getElementById("content");
-const zip = document.getElementById("zip");
 
 // DOM var to update UI
-const feeling = document.getElementById("feeling");
 const date = document.getElementById("date");
 const temp = document.getElementById("temp");
 
@@ -25,31 +23,7 @@ link : "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global
 let newDate = d.getDate() + "." + month + "." + d.getFullYear();
 console.log(newDate);
 
-// Event listener to add function to existing HTML DOM element
-generate.addEventListener("click", (e) => {
-  e.preventDefault();
-  /* Function called by event listener */
-  getData(baseUrl + zip.value + apiKey).then((data) => {
-    postData("http://localhost:7000/post", {
-      temp: data.main.temp,
-      content: feeling.value,
-      date: newDate,
-    }).then((allData) => {
-      // update UI most recent Entry
-      date.innerText = `Today : ${allData.date}`;
-      content.innerText = `Feel like : ${allData.content}`;
-      temp.innerText = `Temperature : ${Math.round(allData.temp)} degrees`;
-      // reset input to empty
-      zip.value = "";
-      feeling.value = "";
-      //   return data
-      return allData;
-    });
-  });
-});
-
 /* Function to GET Web API Data*/
-/* Function to GET Project Data */
 const getData = async (url) => {
   const response = await fetch(url);
   try {
@@ -79,3 +53,49 @@ const postData = async (url, data = {}) => {
     console.log("error", error);
   }
 };
+
+/* Function to GET Project Data */
+// and update UI
+const retrieveData = async (url) => {
+  const response = await fetch(url);
+  try {
+    const allData = await response.json();
+    // update UI most recent Entry
+    date.innerText = `Today : ${allData.date}`;
+    content.innerText = `Feel like : ${allData.content}`;
+    temp.innerText = `Temperature : ${Math.round(allData.temp)} degrees`;
+    // reset input to empty
+    zip.value = "";
+    feeling.value = "";
+    //   return data
+    return allData;
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
+// function chain all get/post requests
+function generateData() {
+  // Event listener to add function to existing HTML DOM element
+  generate.addEventListener("click", (e) => {
+    const feeling = document.getElementById("feeling").value;
+    const zip = document.getElementById("zip").value;
+    // e.preventDefault();
+    /* Function called by event listener */
+    getData(baseUrl + zip + apiKey) //get data from weather api
+      .then((data) => {
+        //post data to local server
+        postData("/post", {
+          temp: data.main.temp,
+          content: feeling,
+          date: newDate,
+        }).then(() => {
+          //get all data from local server after being updated from weather api
+          retrieveData("/all");
+        });
+      });
+  });
+}
+
+// function call
+generateData();

@@ -1,5 +1,5 @@
 // Setup empty JS object to act as endpoint for all routes
-const projectData = {};
+let projectData = {};
 const dataArray = [];
 
 // Require Express to run server and routes
@@ -22,6 +22,7 @@ app.use(cors());
 app.use(express.static("website"));
 
 // Setup Server
+// Express to run server and routes
 // listen to server
 const port = 7000;
 app.listen(port || 4000, () => {
@@ -30,6 +31,7 @@ app.listen(port || 4000, () => {
 });
 
 /* routes */
+// Post Route
 // ## post
 app.post("/post", (req, res) => {
   projectData.temp = req.body.temp;
@@ -41,29 +43,13 @@ app.post("/post", (req, res) => {
   res.send(projectData);
 });
 // ## get
-app.get("/get", (req, res) => {
+app.get("/all", (req, res) => {
   console.log(projectData);
   res.send(projectData);
 });
 
-// Setup empty JS object to act as endpoint for all routes
-// Express to run server and routes
-
-// Start up an instance of app
-
-/* Dependencies */
-/* Middleware*/
-
-//Here we are configuring express to use body-parser as middle-ware.
-// Cors for cross origin allowance
-
-// Initialize the main project folder
-
-// Spin up the server
 // Callback to debug
 
 // Initialize all route with a callback function
 
 // Callback function to complete GET '/all'
-
-// Post Route

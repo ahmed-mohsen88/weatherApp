@@ -1,6 +1,5 @@
 // Setup empty JS object to act as endpoint for all routes
 let projectData = {};
-const dataArray = [];
 
 // Require Express to run server and routes
 const express = require("express");
@@ -25,21 +24,21 @@ app.use(express.static("website"));
 // Express to run server and routes
 // listen to server
 const port = 7000;
-app.listen(port || 4000, () => {
+app.listen(port, () => {
   console.log("server is running");
   console.log("on port " + port);
 });
 
 /* routes */
+// Initialize all route with a callback function
+
 // Post Route
 // ## post
 app.post("/post", (req, res) => {
   projectData.temp = req.body.temp;
   projectData.content = req.body.content;
   projectData.date = req.body.date;
-  dataArray.push(projectData);
-  console.log(dataArray);
-  console.log(projectData);
+  //   return response with data in case we need it
   res.send(projectData);
 });
 // ## get
@@ -47,9 +46,3 @@ app.get("/all", (req, res) => {
   console.log(projectData);
   res.send(projectData);
 });
-
-// Callback to debug
-
-// Initialize all route with a callback function
-
-// Callback function to complete GET '/all'

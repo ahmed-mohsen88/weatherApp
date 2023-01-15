@@ -3,7 +3,7 @@
 // api var
 const baseUrl = "https://api.openweathermap.org/data/2.5/weather?zip=";
 // Personal API Key for OpenWeatherMap API
-const apiKey = "&appid=d0908eba7de46c86b9f2703c3c46351e";
+const apiKey = "&appid=d0908eba7de46c86b9f2703c3c46351e&units=imperial";
 
 // DOM var addEventListener
 const generate = document.getElementById("generate");
@@ -21,12 +21,12 @@ const month = new Intl.DateTimeFormat("en-US", options).format(d);
 link : "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat#using_options"
 */
 let newDate = d.getDate() + "." + month + "." + d.getFullYear();
-console.log(newDate);
 
 /* Function to GET Web API Data*/
 const getData = async (url) => {
   const response = await fetch(url);
   try {
+    // Transform into JSON
     const data = await response.json();
     console.log(data);
     return data;
@@ -59,6 +59,7 @@ const postData = async (url, data = {}) => {
 const retrieveData = async (url) => {
   const response = await fetch(url);
   try {
+    // Transform into JSON
     const allData = await response.json();
     // update UI most recent Entry
     date.innerText = `Today : ${allData.date}`;
@@ -75,20 +76,19 @@ const retrieveData = async (url) => {
 };
 
 // function chain all get/post requests
-function generateData() {
+function update_Ui() {
   // Event listener to add function to existing HTML DOM element
-  generate.addEventListener("click", (e) => {
+  generate.addEventListener("click", () => {
     const feeling = document.getElementById("feeling").value;
     const zip = document.getElementById("zip").value;
-    // e.preventDefault();
     /* Function called by event listener */
     getData(baseUrl + zip + apiKey) //get data from weather api
       .then((data) => {
         //post data to local server
         postData("/post", {
           temp: data.main.temp,
-          content: feeling,
           date: newDate,
+          content: feeling,
         }).then(() => {
           //get all data from local server after being updated from weather api
           retrieveData("/all");
@@ -97,5 +97,5 @@ function generateData() {
   });
 }
 
-// function call
-generateData();
+// click event function call
+update_Ui();

@@ -27,6 +27,10 @@ body {
   flex-direction: column;
   justify-content: space-between;
 }
+#entryHolder {
+  font-size: 18px;
+  margin-top: 7px;
+}
 #app {
   display: grid;
   grid-auto-rows: minmax(150px, auto);
@@ -70,6 +74,7 @@ button {
   font-family: "Oswald", sans-serif;
   border: none;
   box-shadow: 2px 4px 5px #444;
+  cursor: pointer;
 }
 h1 {
   font-size: 36px;

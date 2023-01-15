@@ -12,6 +12,26 @@ const content = document.getElementById("content");
 // DOM var to update UI
 const date = document.getElementById("date");
 const temp = document.getElementById("temp");
+const err_message = document.getElementById("err_message");
+const app = document.getElementById("app");
+
+// error message function
+function err_click(message) {
+  const err_message_container = document.getElementById(
+    "err_message_container"
+  );
+  err_message_container.classList.add("err_message_container");
+  err_message.style.display = "flex";
+  err_message.innerHTML = message;
+  app.style.opacity = "0.1";
+  const err_button = document.getElementById("err_button");
+  err_button?.addEventListener("click", () => {
+    err_message_container.classList.remove("err_message_container");
+    err_message.innerHTML = "";
+    err_message.style.display = "none";
+    app.style.opacity = "1";
+  });
+}
 
 // Create a new date instance dynamically with JS
 let d = new Date();
@@ -29,6 +49,10 @@ const getData = async (url) => {
     // Transform into JSON
     const data = await response.json();
     console.log(data);
+    if (data.message == "city not found") {
+      err_click(`<strong style="width:100%">City not found</strong>
+      <button id="err_button" type="button">OK</button>`);
+    }
     return data;
   } catch (error) {
     console.log("error", error);
@@ -81,19 +105,27 @@ function update_Ui() {
   generate.addEventListener("click", () => {
     const feeling = document.getElementById("feeling").value;
     const zip = document.getElementById("zip").value;
-    /* Function called by event listener */
-    getData(baseUrl + zip + apiKey) //get data from weather api
-      .then((data) => {
-        //post data to local server
-        postData("/post", {
-          temp: data.main.temp,
-          date: newDate,
-          content: feeling,
-        }).then(() => {
-          //get all data from local server after being updated from weather api
-          retrieveData("/all");
+    if (zip == false) {
+      err_click(`<strong style="width:100%">zip input cant be empty</strong>
+      <button id="err_button" type="button">OK</button>`);
+    } else if (isNaN(parseInt(zip))) {
+      err_click(`<strong style="width:100%">zip input must be a number</strong>
+      <button id="err_button" type="button">OK</button>`);
+    } else {
+      /* Function called by event listener */
+      getData(baseUrl + zip + apiKey) //get data from weather api
+        .then((data) => {
+          //post data to local server
+          postData("/post", {
+            temp: data.main.temp,
+            date: newDate,
+            content: feeling,
+          }).then(() => {
+            //get all data from local server after being updated from weather api
+            retrieveData("/all");
+          });
         });
-      });
+    }
   });
 }
 
